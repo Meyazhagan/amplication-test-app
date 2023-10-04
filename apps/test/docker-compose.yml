@@ -13,7 +13,7 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
     depends_on:
-      - migrate
+      - redis_broker
   migrate:
     build:
       context: .
@@ -80,5 +80,14 @@ services:
       timeout: 45s
       interval: 10s
       retries: 10
+  redis_broker:
+    container_name: ${REDIS_BROKER_HOST}
+    image: redis:6
+    ports:
+      - ${REDIS_BROKER_PORT}:6379
+    volumes:
+      - redis_broker:/redis-broker-data
 volumes:
   postgres: ~
+  redis_broker:
+    driver: local
